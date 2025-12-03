@@ -18,17 +18,13 @@ jobs:
       with:
         php-version: '7.4'
         
-    - name: Deploy via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+    - name: Deploy via SFTP
+      uses: pressidium/lftp-mirror-action@v1
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /public_html/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/config/config.php
-          **/*.sql
-          **/README.md
+        host: ${{ secrets.FTP_SERVER }}
+        port: 22
+        user: ${{ secrets.FTP_USERNAME }}
+        pass: ${{ secrets.FTP_PASSWORD }}
+        localDir: '.'
+        remoteDir: '/www/contas'
+        options: '--reverse --verbose --exclude .git/ --exclude .github/ --exclude config/config.php --exclude *.sql --exclude README.md --exclude DEPLOY_GUIDE.md'
