@@ -58,6 +58,7 @@ function atualizarTabela(dados) {
     tabela = jQuery('#tabelaRecebimentos').DataTable({
         language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' },
         order: [[0, 'desc']],
+        pageLength: 25,
         scrollX: true
     });
 }
