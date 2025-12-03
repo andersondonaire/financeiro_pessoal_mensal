@@ -6,11 +6,11 @@
 
 echo "=== GERADOR DE HASH DE SENHA ===\n\n";
 
-$nome_usuario = 'Patrícia ';
-$email_usuario = 'alduina@gmail.com';
+$nome_usuario = '';
+$email_usuario = '';
 
 // Altere aqui a senha desejada
-$senha = 'pat321';
+$senha = '';
 
 $hash = password_hash($senha, PASSWORD_DEFAULT);
 

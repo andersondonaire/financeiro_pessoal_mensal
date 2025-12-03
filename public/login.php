@@ -85,8 +85,7 @@ if (isset($_POST['login'])) {
                         </form>
 
                         <div class="mt-4 text-center small text-muted">
-                            <p class="mb-0">Usuário de teste:</p>
-                            <p class="mb-0"><strong>admin@financeiro.com</strong> / admin123</p>
+
                         </div>
                     </div>
                 </div>
