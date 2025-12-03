@@ -35,6 +35,7 @@ try {
             $recebimentoModel->descricao = strtoupper($data['descricao']);
             $recebimentoModel->valor = $data['valor'];
             $recebimentoModel->data_recebimento = $data['data_recebimento'];
+            $recebimentoModel->categoria_id = $data['categoria_id'] ?? null;
             $recebimentoModel->recorrente = $data['recorrente'] ?? 0;
             $recebimentoModel->confirmado = $data['confirmado'] ?? 0;
             
@@ -53,6 +54,7 @@ try {
             $recebimentoModel->descricao = strtoupper($data['descricao']);
             $recebimentoModel->valor = $data['valor'];
             $recebimentoModel->data_recebimento = $data['data_recebimento'];
+            $recebimentoModel->categoria_id = $data['categoria_id'] ?? null;
             $recebimentoModel->recorrente = $data['recorrente'] ?? 0;
             $recebimentoModel->confirmado = $data['confirmado'] ?? 0;
             

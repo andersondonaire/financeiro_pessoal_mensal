@@ -72,6 +72,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
+                    <button id="toggleVisibilidade" class="btn btn-sm btn-outline-light me-3" title="Mostrar/ocultar valores">
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </button>
                     <span class="badge rounded-pill me-2" style="background-color: <?= $usuario['cor'] ?>">
                         <?= substr($usuario['nome'], 0, 2) ?>
                     </span>
@@ -115,9 +118,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-check-circle me-1"></i>Recebidos
                         </h6>
-                        <h4 class="mb-0 text-success">
+                        <h4 class="mb-0 text-success"><span class="valor-sigiloso">
                             <?= number_format($dados['recebimentos']['confirmados'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                         <a href="recebimentos.php" class="stretched-link"></a>
                     </div>
                 </div>
@@ -130,9 +133,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-check-circle me-1"></i>Pagos
                         </h6>
-                        <h4 class="mb-0 text-danger">
+                        <h4 class="mb-0 text-danger"><span class="valor-sigiloso">
                             <?= number_format($dados['pagamentos']['confirmados'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                         <a href="pagamentos.php" class="stretched-link"></a>
                     </div>
                 </div>
@@ -145,9 +148,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-clock me-1"></i>Falta Receber
                         </h6>
-                        <h4 class="mb-0 text-info">
+                        <h4 class="mb-0 text-info"><span class="valor-sigiloso">
                             <?= number_format($dados['recebimentos']['pendentes'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                         <a href="recebimentos.php" class="stretched-link"></a>
                     </div>
                 </div>
@@ -160,9 +163,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-clock me-1"></i>Falta Pagar
                         </h6>
-                        <h4 class="mb-0 text-warning">
+                        <h4 class="mb-0 text-warning"><span class="valor-sigiloso">
                             <?= number_format($dados['pagamentos']['pendentes'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                         <a href="pagamentos.php" class="stretched-link"></a>
                     </div>
                 </div>
@@ -175,9 +178,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-wallet me-1"></i>Saldo Atual
                         </h6>
-                        <h4 class="mb-0 <?= $dados['saldo']['confirmado'] >= 0 ? 'text-success' : 'text-danger' ?>" id="saldoCalculado">
+                        <h4 class="mb-0 <?= $dados['saldo']['confirmado'] >= 0 ? 'text-success' : 'text-danger' ?>" id="saldoCalculado"><span class="valor-sigiloso">
                             <?= number_format($dados['saldo']['confirmado'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                     </div>
                 </div>
             </div>
@@ -189,9 +192,9 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                         <h6 class="card-subtitle mb-2 text-muted small">
                             <i class="fas fa-chart-line me-1"></i>Projetado
                         </h6>
-                        <h4 class="mb-0 <?= $dados['saldo']['projetado'] >= 0 ? 'text-success' : 'text-danger' ?>">
+                        <h4 class="mb-0 <?= $dados['saldo']['projetado'] >= 0 ? 'text-success' : 'text-danger' ?>"><span class="valor-sigiloso">
                             <?= number_format($dados['saldo']['projetado'], 2, ',', '.') ?>
-                        </h4>
+                        </span></h4>
                         <small class="text-muted" style="font-size: 0.7rem;">Se tudo pago</small>
                     </div>
                 </div>
@@ -285,7 +288,7 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                                             <i class="fas <?= $cat['icone'] ?> me-2" style="color: <?= $cat['cor'] ?>"></i>
                                             <?= $cat['nome'] ?>
                                         </td>
-                                        <td class="text-end">R$ <?= number_format($cat['total'], 2, ',', '.') ?></td>
+                                        <td class="text-end valor-sigiloso">R$ <?= number_format($cat['total'], 2, ',', '.') ?></td>
                                         <td class="text-end"><?= number_format($percentual, 1) ?>%</td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -302,6 +305,38 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script src="/public/assets/js/app.js"></script>
     <script>
+        // Controle de visibilidade de valores
+        const btnToggle = document.getElementById('toggleVisibilidade');
+        const classeMascara = 'valor-mascarado';
+
+        function aplicarVisibilidade() {
+            const estado = localStorage.getItem('visibilidade_saldos') || 'oculto';
+            const elementos = document.querySelectorAll('.valor-sigiloso');
+            elementos.forEach(el => {
+                if (estado === 'oculto') {
+                    el.classList.add(classeMascara);
+                } else {
+                    el.classList.remove(classeMascara);
+                }
+            });
+            const icone = btnToggle.querySelector('i');
+            if (estado === 'oculto') {
+                icone.classList.remove('fa-eye');
+                icone.classList.add('fa-eye-slash');
+            } else {
+                icone.classList.remove('fa-eye-slash');
+                icone.classList.add('fa-eye');
+            }
+        }
+
+        btnToggle.addEventListener('click', () => {
+            const atual = localStorage.getItem('visibilidade_saldos') || 'oculto';
+            localStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
+            aplicarVisibilidade();
+        });
+
+        document.addEventListener('DOMContentLoaded', aplicarVisibilidade);
+
         // Saldo calculado pelo sistema
         const SALDO_CALCULADO = <?= $dados['saldo']['confirmado'] ?>;
 

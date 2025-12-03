@@ -1,9 +1,12 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../src/Auth.php';
+require_once __DIR__ . '/../src/Models/Categoria.php';
 
 Auth::verificarLogin();
 $usuario = Auth::getUsuario();
+$categoriaModel = new Categoria();
+$categorias = $categoriaModel->buscarTodas();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="dark">
@@ -48,6 +51,7 @@ $usuario = Auth::getUsuario();
                             <tr>
                                 <th>Data</th>
                                 <th>Descrição</th>
+                                <th>Categoria</th>
                                 <th>Valor</th>
                                 <th>Status</th>
                                 <th>Ações</th>
@@ -77,6 +81,16 @@ $usuario = Auth::getUsuario();
                         <div class="mb-3">
                             <label for="descricao" class="form-label">Descrição</label>
                             <input type="text" class="form-control" id="descricao" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoria_id" class="form-label">Categoria</label>
+                            <select class="form-select" id="categoria_id" required>
+                                <option value="">Selecione...</option>
+                                <?php foreach ($categorias as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"><?= $cat['nome'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div class="row">

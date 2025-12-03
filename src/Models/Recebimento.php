@@ -16,6 +16,7 @@ class Recebimento
     public $descricao;
     public $valor;
     public $data_recebimento;
+    public $categoria_id;
     public $recorrente;
     public $confirmado;
     public $data_criacao;
@@ -31,8 +32,8 @@ class Recebimento
     public function criar()
     {
         $query = "INSERT INTO {$this->tabela} 
-                  (usuario_id, descricao, valor, data_recebimento, recorrente, confirmado) 
-                  VALUES (:usuario_id, :descricao, :valor, :data_recebimento, :recorrente, :confirmado)";
+              (usuario_id, descricao, valor, data_recebimento, categoria_id, recorrente, confirmado) 
+              VALUES (:usuario_id, :descricao, :valor, :data_recebimento, :categoria_id, :recorrente, :confirmado)";
         
         $stmt = $this->db->prepare($query);
 
@@ -40,6 +41,7 @@ class Recebimento
         $stmt->bindParam(':descricao', $this->descricao);
         $stmt->bindParam(':valor', $this->valor);
         $stmt->bindParam(':data_recebimento', $this->data_recebimento);
+        $stmt->bindParam(':categoria_id', $this->categoria_id);
         $stmt->bindParam(':recorrente', $this->recorrente);
         $stmt->bindParam(':confirmado', $this->confirmado);
 
@@ -51,13 +53,16 @@ class Recebimento
      */
     public function buscarPorUsuario($usuario_id, $data_inicio = null, $data_fim = null)
     {
-        $query = "SELECT * FROM {$this->tabela} WHERE usuario_id = :usuario_id";
+        $query = "SELECT r.*, c.nome AS categoria_nome, c.id AS categoria_id
+              FROM {$this->tabela} r
+              LEFT JOIN categorias c ON c.id = r.categoria_id
+              WHERE r.usuario_id = :usuario_id";
         
         if ($data_inicio && $data_fim) {
             $query .= " AND data_recebimento BETWEEN :data_inicio AND :data_fim";
         }
         
-        $query .= " ORDER BY data_recebimento DESC";
+        $query .= " ORDER BY r.data_recebimento DESC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':usuario_id', $usuario_id);
@@ -92,6 +97,7 @@ class Recebimento
                   SET descricao = :descricao, 
                       valor = :valor, 
                       data_recebimento = :data_recebimento,
+                      categoria_id = :categoria_id,
                       recorrente = :recorrente,
                       confirmado = :confirmado
                   WHERE id = :id";
@@ -101,6 +107,7 @@ class Recebimento
         $stmt->bindParam(':descricao', $this->descricao);
         $stmt->bindParam(':valor', $this->valor);
         $stmt->bindParam(':data_recebimento', $this->data_recebimento);
+        $stmt->bindParam(':categoria_id', $this->categoria_id);
         $stmt->bindParam(':recorrente', $this->recorrente);
         $stmt->bindParam(':confirmado', $this->confirmado);
         $stmt->bindParam(':id', $this->id);

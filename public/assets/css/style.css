@@ -290,3 +290,8 @@ body {
     display: none;
 }
 
+/* Mascarar valores sensíveis (dashboard) */
+.valor-mascarado {
+    filter: blur(6px);
+}
+

@@ -36,6 +36,7 @@ function atualizarTabela(dados) {
                 ${rec.descricao}
                 ${rec.recorrente == 1 ? '<span class="badge bg-info ms-2">Recorrente</span>' : ''}
             </td>
+            <td>${rec.categoria_nome ? rec.categoria_nome : '-'}</td>
             <td class="text-success fw-bold">R$ ${parseFloat(rec.valor).toFixed(2).replace('.', ',')}</td>
             <td>
                 ${rec.confirmado == 1 
@@ -68,6 +69,7 @@ async function salvarRecebimento() {
         descricao: document.getElementById('descricao').value,
         valor: App.unmaskMoney(document.getElementById('valor').value),
         data_recebimento: document.getElementById('data_recebimento').value,
+        categoria_id: document.getElementById('categoria_id').value,
         recorrente: document.getElementById('recorrente').checked ? 1 : 0,
         confirmado: document.getElementById('confirmado').checked ? 1 : 0
     };
@@ -109,6 +111,9 @@ async function editarRecebimento(id) {
                 document.getElementById('descricao').value = recebimento.descricao;
                 document.getElementById('valor').value = parseFloat(recebimento.valor).toFixed(2).replace('.', ',');
                 document.getElementById('data_recebimento').value = recebimento.data_recebimento;
+                if (document.getElementById('categoria_id')) {
+                    document.getElementById('categoria_id').value = recebimento.categoria_id || '';
+                }
                 document.getElementById('recorrente').checked = recebimento.recorrente == 1;
                 document.getElementById('confirmado').checked = recebimento.confirmado == 1;
                 document.getElementById('modalTitulo').textContent = 'Editar Recebimento';
