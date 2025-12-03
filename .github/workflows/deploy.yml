@@ -23,7 +23,7 @@ jobs:
       with:
         host: ${{ secrets.FTP_SERVER }}
         port: 22
-        user: ${{ secrets.FTP_USERNAME }}
+        user: ${{ secrets.FTP_USER }}
         pass: ${{ secrets.FTP_PASSWORD }}
         localDir: '.'
         remoteDir: '/www/contas'
