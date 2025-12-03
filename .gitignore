@@ -1,0 +1,43 @@
+# Configurações sensíveis
+config/config.php
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.production
+
+# Arquivos temporários
+*.tmp
+*.log
+*.csv
+*.sql
+
+# Cache e sessões
+cache/
+sessions/
+tmp/
+
+# Dependências (se usar Composer futuramente)
+vendor/
+node_modules/
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+Thumbs.db
+
+# Uploads de usuários (se houver)
+uploads/
+public/uploads/
+
+# Backups
+backup/
+*.bak
+*.backup
+
+# Arquivos do sistema
+*.swp
+*~
+.directory

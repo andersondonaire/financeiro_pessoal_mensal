@@ -1,0 +1,292 @@
+/* Gerenciador Financeiro - Tema Escuro Mobile-First */
+
+:root {
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --border-color: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --primary-color: #58a6ff;
+    --success-color: #3fb950;
+    --danger-color: #f85149;
+    --warning-color: #d29922;
+}
+
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-primary) !important;
+    font-size: 14px;
+}
+
+.card {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table {
+    color: var(--text-primary) !important;
+}
+
+.table-dark {
+    --bs-table-bg: var(--bg-card);
+    --bs-table-border-color: var(--border-color);
+}
+
+/* Mobile First - Cards empilhados */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 12px;
+    }
+}
+
+/* Botões personalizados */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* DataTables dark theme */
+.dataTables_wrapper {
+    color: var(--text-primary) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--text-primary) !important;
+}
+
+/* Inputs dark */
+.form-control[type="text"], .form-control, textarea.form-control {
+    text-transform: uppercase;
+}   
+
+.form-control, .form-select {
+    background-color: var(--bg-dark);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-card);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.input-group-text {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Badge customizado */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Saldo cards */
+.saldo-card {
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.saldo-card:hover {
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+.saldo-card .stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Responsivo para gráficos */
+@media (max-width: 576px) {
+    canvas {
+        max-height: 250px !important;
+    }
+}
+
+/* ========================================
+   ESTILOS PARA IMPRESSÃO / PDF
+   ======================================== */
+@media print {
+    /* Ocultar elementos de navegação e interação */
+    .navbar,
+    .btn,
+    button,
+    .modal,
+    .no-print,
+    .dataTables_filter,
+    .dataTables_length,
+    .dataTables_info,
+    .dataTables_paginate {
+        display: none !important;
+    }
+
+    /* Ajustar layout para impressão */
+    body {
+        background-color: white !important;
+        color: black !important;
+        font-size: 11pt;
+    }
+
+    .container-fluid {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+    }
+
+    /* Cards de resumo */
+    .card {
+        background-color: white !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+        margin-bottom: 10px;
+    }
+
+    .card-header {
+        background-color: #f5f5f5 !important;
+        color: black !important;
+        border-bottom: 1px solid #ccc !important;
+        padding: 8px 12px;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    /* Tabelas */
+    .table {
+        color: black !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: auto;
+    }
+
+    .table thead {
+        background-color: #e9ecef !important;
+        color: black !important;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ccc !important;
+        padding: 6px 8px;
+        font-size: 10pt;
+    }
+
+    .table tbody tr {
+        page-break-inside: avoid;
+    }
+
+    /* Cores para impressão */
+    .text-success { color: #28a745 !important; }
+    .text-danger { color: #dc3545 !important; }
+    .text-warning { color: #856404 !important; }
+    .text-info { color: #0c5460 !important; }
+    .text-primary { color: #004085 !important; }
+
+    .bg-success { background-color: #d4edda !important; }
+    .bg-danger { background-color: #f8d7da !important; }
+    .bg-warning { background-color: #fff3cd !important; }
+    .bg-info { background-color: #d1ecf1 !important; }
+
+    /* Badges */
+    .badge {
+        border: 1px solid #ccc !important;
+        padding: 2px 6px;
+        color: black !important;
+        background-color: #f5f5f5 !important;
+    }
+
+    /* Gráficos - reduzir tamanho */
+    canvas {
+        max-height: 300px !important;
+        page-break-inside: avoid;
+    }
+
+    /* Cabeçalho do relatório */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #000;
+    }
+
+    .print-header h1 {
+        font-size: 18pt;
+        margin: 0;
+    }
+
+    .print-header p {
+        font-size: 11pt;
+        margin: 5px 0;
+    }
+
+    /* Quebras de página */
+    .page-break {
+        page-break-after: always;
+    }
+
+    /* Cards de resumo em linha */
+    .row.g-3 {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -5px;
+    }
+
+    .row.g-3 > div {
+        padding: 0 5px;
+        margin-bottom: 10px;
+    }
+
+    /* Alertas */
+    .alert {
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+    }
+
+    /* Ocultar conciliação bancária na impressão */
+    #resultadoConciliacao {
+        display: none !important;
+    }
+
+    /* Ajustar input de conciliação */
+    input.form-control {
+        border: 1px solid #ccc !important;
+        background-color: white !important;
+        color: black !important;
+    }
+}
+
+/* Classe helper para cabeçalho de impressão (oculto na tela) */
+.print-header {
+    display: none;
+}
+
