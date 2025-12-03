@@ -12,7 +12,13 @@ class Database
     private function __construct()
     {
         try {
-            $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
+            // Forçar conexão TCP/IP para evitar problemas com socket Unix
+            $host = DB_HOST;
+            if ($host === 'localhost') {
+                $host = '127.0.0.1';
+            }
+            
+            $dsn = 'mysql:host=' . $host . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
             
             $opcoes = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
