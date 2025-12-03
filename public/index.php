@@ -17,6 +17,11 @@ switch ($periodo) {
         $data_fim = date('Y-m-t', strtotime('-1 month'));
         $label_periodo = 'Mês Passado';
         break;
+    case 'proximo_mes':
+        $data_inicio = date('Y-m-01', strtotime('+1 month'));
+        $data_fim = date('Y-m-t', strtotime('+1 month'));
+        $label_periodo = 'Próximo Mês';
+        break;
     case 'mes_atual':
     default:
         $data_inicio = date('Y-m-01');
@@ -99,18 +104,40 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
         <div class="row mb-3 no-print">
             <div class="col-md-4">
                 <select id="periodo" class="form-select">
-                    <option value="mes_atual" <?= $periodo === 'mes_atual' ? 'selected' : '' ?>>Mês Atual</option>
                     <option value="mes_passado" <?= $periodo === 'mes_passado' ? 'selected' : '' ?>>Mês Passado</option>
+                    <option value="mes_atual" <?= $periodo === 'mes_atual' ? 'selected' : '' ?>>Mês Atual</option>
+                    <option value="proximo_mes" <?= $periodo === 'proximo_mes' ? 'selected' : '' ?>>Próximo Mês</option>
                 </select>
             </div>
             <div class="col-md-8 text-end">
-
+                <?php if ($periodo === 'proximo_mes'): ?>
+                    <button class="btn btn-success" onclick="gerarRecorrencias()">
+                        <i class="fas fa-sync-alt"></i> Gerar Recorrências do Próximo Mês
+                    </button>
+                <?php endif; ?>
                 <h5 class="mt-2 d-inline-block ms-3"><?= $label_periodo ?> - <?= date('d/m/Y', strtotime($data_inicio)) ?> a <?= date('d/m/Y', strtotime($data_fim)) ?></h5>
             </div>
         </div>
 
         <!-- Cards de Resumo -->
         <div class="row g-3 mb-4">
+            <?php if ($periodo === 'proximo_mes' && $dados['saldo']['anterior'] != 0): ?>
+            <!-- Saldo do Mês Anterior (apenas no próximo mês) -->
+            <div class="col-md-2">
+                <div class="card saldo-card border-light">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted small">
+                            <i class="fas fa-history me-1"></i>Saldo Anterior
+                        </h6>
+                        <h4 class="mb-0 <?= $dados['saldo']['anterior'] >= 0 ? 'text-success' : 'text-danger' ?>"><span class="valor-sigiloso">
+                            <?= number_format($dados['saldo']['anterior'], 2, ',', '.') ?>
+                        </span></h4>
+                        <small class="text-muted" style="font-size: 0.7rem;">Mês passado</small>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
             <!-- Recebimentos Confirmados -->
             <div class="col-md-2">
                 <div class="card saldo-card border-success">
@@ -216,7 +243,7 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                                 </label>
                                 <div class="input-group">
                                     <span class="input-group-text">R$</span>
-                                    <input type="text" class="form-control" id="saldoReal" placeholder="0,00" onkeyup="formatarMoeda(this)">
+                                    <input type="text" class="form-control valor-sigiloso" id="saldoReal" placeholder="0,00" onkeyup="formatarMoeda(this)">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -319,23 +346,32 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                     el.classList.remove(classeMascara);
                 }
             });
-            const icone = btnToggle.querySelector('i');
-            if (estado === 'oculto') {
-                icone.classList.remove('fa-eye');
-                icone.classList.add('fa-eye-slash');
-            } else {
-                icone.classList.remove('fa-eye-slash');
-                icone.classList.add('fa-eye');
+            
+            if (btnToggle) {
+                const icone = btnToggle.querySelector('i');
+                if (estado === 'oculto') {
+                    icone.classList.remove('fa-eye');
+                    icone.classList.add('fa-eye-slash');
+                } else {
+                    icone.classList.remove('fa-eye-slash');
+                    icone.classList.add('fa-eye');
+                }
             }
         }
 
-        btnToggle.addEventListener('click', () => {
-            const atual = localStorage.getItem('visibilidade_saldos') || 'oculto';
-            localStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
-            aplicarVisibilidade();
-        });
+        // Aplicar imediatamente ao carregar
+        aplicarVisibilidade();
 
-        document.addEventListener('DOMContentLoaded', aplicarVisibilidade);
+        // Adicionar evento de clique quando o botão estiver disponível
+        document.addEventListener('DOMContentLoaded', function() {
+            if (btnToggle) {
+                btnToggle.addEventListener('click', () => {
+                    const atual = localStorage.getItem('visibilidade_saldos') || 'oculto';
+                    localStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
+                    aplicarVisibilidade();
+                });
+            }
+        });
 
         // Saldo calculado pelo sistema
         const SALDO_CALCULADO = <?= $dados['saldo']['confirmado'] ?>;
@@ -461,6 +497,30 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
         document.getElementById('periodo').addEventListener('change', function() {
             window.location.href = '?periodo=' + this.value;
         });
+
+        // Gerar recorrências para próximo mês
+        async function gerarRecorrencias() {
+            if (!confirm('Gerar lançamentos recorrentes para o próximo mês?')) return;
+
+            try {
+                const response = await fetch('/api/gerar_recorrencias.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    App.showToast(result.message, 'success');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    App.showToast(result.message || 'Erro ao gerar recorrências', 'danger');
+                }
+            } catch (error) {
+                App.showToast('Erro ao processar requisição', 'danger');
+            }
+        }
     </script>
 </body>
 </html>
