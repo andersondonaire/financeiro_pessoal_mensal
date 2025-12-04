@@ -14,10 +14,10 @@ class Auth
     {
         if (!isset($_SESSION['usuario_id'])) {
             if (!headers_sent()) {
-                header('Location: ' . SITE_URL . '/login.php');
+                header('Location: ' . SITE_URL . '/public/login.php');
                 exit;
             }
-            die('Sessão expirada. <a href="' . SITE_URL . '/login.php">Fazer login</a>');
+            die('Sessão expirada. <a href="' . SITE_URL . '/public/login.php">Fazer login</a>');
         }
     }
 
@@ -39,7 +39,7 @@ class Auth
     {
         session_unset();
         session_destroy();
-        header('Location: ' . SITE_URL . '/login.php');
+        header('Location: ' . SITE_URL . '/public/login.php');
         exit;
     }
 
