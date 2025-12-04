@@ -336,8 +336,15 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
         const btnToggle = document.getElementById('toggleVisibilidade');
         const classeMascara = 'valor-mascarado';
 
-        function aplicarVisibilidade() {
-            const estado = localStorage.getItem('visibilidade_saldos') || 'oculto';
+        function aplicarVisibilidade(forcarOculto = false) {
+            let estado = localStorage.getItem('visibilidade_saldos') || 'oculto';
+            
+            // Forçar oculto no carregamento inicial da página
+            if (forcarOculto) {
+                estado = 'oculto';
+                localStorage.setItem('visibilidade_saldos', 'oculto');
+            }
+            
             const elementos = document.querySelectorAll('.valor-sigiloso');
             elementos.forEach(el => {
                 if (estado === 'oculto') {
@@ -359,8 +366,8 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
             }
         }
 
-        // Aplicar imediatamente ao carregar
-        aplicarVisibilidade();
+        // Aplicar oculto ao carregar (forçado)
+        aplicarVisibilidade(true);
 
         // Adicionar evento de clique quando o botão estiver disponível
         document.addEventListener('DOMContentLoaded', function() {
@@ -368,7 +375,7 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
                 btnToggle.addEventListener('click', () => {
                     const atual = localStorage.getItem('visibilidade_saldos') || 'oculto';
                     localStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
-                    aplicarVisibilidade();
+                    aplicarVisibilidade(false);
                 });
             }
         });
