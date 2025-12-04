@@ -336,14 +336,10 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
         const btnToggle = document.getElementById('toggleVisibilidade');
         const classeMascara = 'valor-mascarado';
 
-        function aplicarVisibilidade(forcarOculto = false) {
-            let estado = localStorage.getItem('visibilidade_saldos') || 'oculto';
-            
-            // Forçar oculto no carregamento inicial da página
-            if (forcarOculto) {
-                estado = 'oculto';
-                localStorage.setItem('visibilidade_saldos', 'oculto');
-            }
+        function aplicarVisibilidade() {
+            // sessionStorage persiste apenas na sessão atual (aba/janela)
+            // Ao fechar o navegador/aba, volta ao padrão 'oculto'
+            const estado = sessionStorage.getItem('visibilidade_saldos') || 'oculto';
             
             const elementos = document.querySelectorAll('.valor-sigiloso');
             elementos.forEach(el => {
@@ -366,16 +362,16 @@ $dados = $controller->getDados($usuario['id'], $data_inicio, $data_fim);
             }
         }
 
-        // Aplicar oculto ao carregar (forçado)
-        aplicarVisibilidade(true);
+        // Aplicar ao carregar (padrão oculto na primeira vez)
+        aplicarVisibilidade();
 
         // Adicionar evento de clique quando o botão estiver disponível
         document.addEventListener('DOMContentLoaded', function() {
             if (btnToggle) {
                 btnToggle.addEventListener('click', () => {
-                    const atual = localStorage.getItem('visibilidade_saldos') || 'oculto';
-                    localStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
-                    aplicarVisibilidade(false);
+                    const atual = sessionStorage.getItem('visibilidade_saldos') || 'oculto';
+                    sessionStorage.setItem('visibilidade_saldos', atual === 'oculto' ? 'visivel' : 'oculto');
+                    aplicarVisibilidade();
                 });
             }
         });
