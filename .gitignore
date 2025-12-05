@@ -10,7 +10,7 @@ config/config.php
 *.tmp
 *.log
 *.csv
-*.sql
+# *.sql'
 
 # Cache e sessões
 cache/
